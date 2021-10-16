@@ -1,5 +1,5 @@
 # TetrisReverseSolve
-##Plans
+## Plans
 Filter out the actually possible ones using solution-finder
 ## Dependancies
 In the future:
