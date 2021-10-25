@@ -223,3 +223,7 @@ bool IsFieldEmpty(TPlayField Field, int compare) {
 	}
 	return true;
 }
+
+bool IsInteger(std::string& s) {
+	return (s.find_first_not_of("1234567890") == std::string::npos);
+}

@@ -15,6 +15,8 @@ protected:
 public:
 	int PieceBoxSize(int piece);
 
+	int ConvertPieceToEnum(char piece);
+
 	char ConvertEnumToPiece(int Enum);
 
 	std::vector<std::vector<bool>> PieceFilled(int piece, int state);

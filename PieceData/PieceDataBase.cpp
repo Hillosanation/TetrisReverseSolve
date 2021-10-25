@@ -1,23 +1,24 @@
 #pragma once
 #include "..\Misc\CommonFunctions.h"
-#include "PieceDataBase.h""
+#include "..\Misc\LogError.h"
+#include "PieceDataBase.h"
 #include <vector>
 #include <functional>
 
 //std::map<char, int> PieceEnum;
 //virtual void SetPieceEnum() = 0;
 
-//int ConvertPieceToEnum(char piece) { //uneeded, nothing uses this
-//	std::map<char, int>::iterator PieceIt = PieceEnum.find(piece);
-//	if (PieceIt != PieceEnum.end()) {
-//		return PieceIt->second;
-//	}
-//	else {
-//		LogError Error;
-//		Error.Log("Invalid Piece type", "PieceDataBase.ConvertPieceToEnum");
-//		return -1;
-//	}
-//}
+int PieceDataBase::ConvertPieceToEnum(char piece) {
+	std::vector<char>::iterator PieceIt = std::find(Pieces.begin(), Pieces.end(), piece);
+	if (PieceIt != Pieces.end()) {
+		return PieceIt - Pieces.begin();
+	}
+	else {
+		LogError Error;
+		Error.Log("Invalid Piece type", "PieceDataBase.ConvertPieceToEnum");
+		return -1;
+	}
+}
 
 int PieceDataBase::PieceBoxSize(int piece) {
 	return PiecesDataFilled[piece].size();
