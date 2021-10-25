@@ -2,6 +2,7 @@
 #include <utility>
 #include <vector>
 #include <functional>
+#include <string>
 
 typedef std::vector<std::vector<int>> TPlayField; //IMPROVE: replace with this type for readability
 typedef std::vector<std::vector<bool>> TPlayFieldFilled;
@@ -18,3 +19,5 @@ template<typename elementType>
 std::vector<std::vector<elementType>> ConstructNestedVectorByElements(std::vector<size_t> LoopBounds, TCondition condition, elementType TrueVal, elementType FalseVal);
 
 bool IsFieldEmpty(TPlayField Field, int compare);
+
+bool IsInteger(std::string& s);
