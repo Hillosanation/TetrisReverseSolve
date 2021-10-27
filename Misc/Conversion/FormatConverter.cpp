@@ -1,4 +1,5 @@
 #include "FormatConverter.h"
+#include "../../Misc/LogError.h"
 
 std::string TConverter::SolToString(const PresentPieces& Sol) {
 	std::string Output;
@@ -87,6 +88,15 @@ PlayFieldFilled TConverter::StringToPFF_Hack(const std::string& str) {
 			continue;
 		}
 		tmpRow.push_back((bool)(letter - '0'));
+	}
+	//sanity check: all rows are of same width
+	int width = Output[0].size();
+	for (const auto& row : Output) {
+		if (width != row.size()) {
+			LogError Error;
+			Error.Log("Uneven Row size", "TConverter.StringToPFF_Hack");
+			break;
+		}
 	}
 	return Output;
 }
