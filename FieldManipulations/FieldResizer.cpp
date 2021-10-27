@@ -278,6 +278,3 @@ std::vector<PFFSol> FieldResizer::ExpandPFFs(std::vector<PFFSol> PFFSols, Settin
 	std::cout << "Time taken for expansion: " << std::chrono::duration_cast<std::chrono::microseconds>(EndTime - StartTime).count() / 1000.0 << "ms\n";
 	return Output;
 }
-/*you lose information when reducing, remember to append back to size with unified direction
-* as for expanding, the dimensions of the board will have to be considered, it may be impossible to tell which is which
-*/
