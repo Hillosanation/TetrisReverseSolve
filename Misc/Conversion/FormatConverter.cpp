@@ -72,23 +72,21 @@ std::string TConverter::PFFToString(const PlayFieldFilled& PFFilled) {
 		for (auto mino : col) {
 			Output += mino ? '1' : '0';
 		}
+		Output += "/";
 	}
 	return Output;
 }
 
 PlayFieldFilled TConverter::StringToPFF_Hack(const std::string& str, int height) {
-	int width = (int)str.length() / height;
 	PlayFieldFilled Output;
-	Output.reserve(height);
 	std::vector<bool> tmpRow;
-	tmpRow.reserve(width);
-	for (auto mino : str) {
-		tmpRow.push_back((bool)(mino - '0'));
-		if (tmpRow.size() == width) {
+	for (const auto letter : str) {
+		if (letter == '/') { //delimiter
 			Output.push_back(tmpRow);
 			tmpRow.clear();
-			tmpRow.reserve(width);
+			continue;
 		}
+		tmpRow.push_back((bool)(letter - '0'));
 	}
 	return Output;
 }
