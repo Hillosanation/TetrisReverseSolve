@@ -1,4 +1,5 @@
 #include "FormatConverter.h"
+#include "../../Misc/LogError.h"
 
 std::string TConverter::SolToString(const PresentPieces& Sol) {
 	std::string Output;
@@ -72,22 +73,29 @@ std::string TConverter::PFFToString(const PlayFieldFilled& PFFilled) {
 		for (auto mino : col) {
 			Output += mino ? '1' : '0';
 		}
+		Output += "/";
 	}
 	return Output;
 }
 
-PlayFieldFilled TConverter::StringToPFF_Hack(const std::string& str, int height) {
-	int width = (int)str.length() / height;
+PlayFieldFilled TConverter::StringToPFF_Hack(const std::string& str) {
 	PlayFieldFilled Output;
-	Output.reserve(height);
 	std::vector<bool> tmpRow;
-	tmpRow.reserve(width);
-	for (auto mino : str) {
-		tmpRow.push_back((bool)(mino - '0'));
-		if (tmpRow.size() == width) {
+	for (const auto letter : str) {
+		if (letter == '/') { //delimiter
 			Output.push_back(tmpRow);
 			tmpRow.clear();
-			tmpRow.reserve(width);
+			continue;
+		}
+		tmpRow.push_back((bool)(letter - '0'));
+	}
+	//sanity check: all rows are of same width
+	int width = Output[0].size();
+	for (const auto& row : Output) {
+		if (width != row.size()) {
+			LogError Error;
+			Error.Log("Uneven Row size", "TConverter.StringToPFF_Hack");
+			break;
 		}
 	}
 	return Output;
@@ -108,17 +116,17 @@ std::vector<StrSol> TConverter::PFFSolsToPFFSStrReps(const std::vector<PFFSol>& 
 	return Output;
 }
 
-PFFSol TConverter::PFFStrRepToPFFSol(const StrSol& SSol, int height) {
+PFFSol TConverter::PFFStrRepToPFFSol(const StrSol& SSol) {
 	PFFSol Output;
-	Output.PFFilled = StringToPFF_Hack(SSol.Str, height);
+	Output.PFFilled = StringToPFF_Hack(SSol.Str);
 	Output.Solves = SSol.Solves;
 	return Output;
 }
 
-std::vector<PFFSol> TConverter::PFFStrRepsToPFFSols(const std::vector<StrSol>& SSols, int height) {
+std::vector<PFFSol> TConverter::PFFStrRepsToPFFSols(const std::vector<StrSol>& SSols) {
 	std::vector<PFFSol> Output;
 	for (const auto& SSol : SSols) {
-		Output.push_back(PFFStrRepToPFFSol(SSol, height));
+		Output.push_back(PFFStrRepToPFFSol(SSol));
 	}
 	return Output;
 }

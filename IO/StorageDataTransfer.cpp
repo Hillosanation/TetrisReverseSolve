@@ -71,7 +71,7 @@ void StorageDataTransfer::OutputPresentPiece(PresentPieces PPiece, std::ofstream
 
 std::vector<StrFieldStrPiece> StorageDataTransfer::ReadInputCSV(std::string InputName) { //parses stored csv 
 	std::ifstream fs;
-	fs.open("./" + InputName, std::fstream::in);
+	fs.open(PathPrefix + InputName, std::fstream::in);
 	std::string line;
 	bool FirstLine = true;
 
@@ -131,7 +131,7 @@ std::vector<StrFieldStrPiece> StorageDataTransfer::ReadInputCSV(std::string Inpu
 
 void StorageDataTransfer::WriteOutputCSV(std::vector<StrFieldStrPiece> SFieldSPieces, std::string OutputName) {
 	std::ofstream os;
-	std::string path = "./" + OutputName;
+	std::string path = PathPrefix + OutputName;
 	os.open(path, std::fstream::trunc);
 	if (!os) { //doesn't exist, make new
 		std::ofstream file(path);
@@ -151,7 +151,7 @@ void StorageDataTransfer::WriteOutputCSV(std::vector<StrFieldStrPiece> SFieldSPi
 
 void StorageDataTransfer::ReadSettings(const std::string& SettingsName, SettingsData& Settings) {
 	std::ifstream fs;
-	fs.open("./" + SettingsName, std::fstream::in);
+	fs.open(PathPrefix + SettingsName, std::fstream::in);
 	std::string line;
 	int enumIndex = 0;
 
@@ -198,8 +198,7 @@ std::vector<PFFSol> StorageDataTransfer::DecodeCSVFormat(std::vector<StrFieldStr
 
 	//converts string input -> PFF
 	if (std::stoi(Settings.GetValue(SettingsData::SettingsEnum::INPUT_FORMAT)) % 2 == 0) { //PFF String Representation
-		int height = std::stoi(Settings.GetValue(SettingsData::SettingsEnum::FIELD_HEIGHT));
-		PFFSols = PFFStrRepsToPFFSols(StrSols, height);
+		PFFSols = PFFStrRepsToPFFSols(StrSols);
 	}
 	else { //Fumen
 		int height = std::stoi(Settings.GetValue(SettingsData::SettingsEnum::FIELD_HEIGHT));

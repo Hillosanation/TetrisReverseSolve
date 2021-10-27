@@ -10,6 +10,8 @@ struct StorageDataTransfer : protected TConverter {
 private:
 	void OutputPresentPiece(PresentPieces PPiece, std::ofstream& os);
 
+	std::string PathPrefix = "./";
+
 public:
 	std::vector<StrFieldStrPiece> ReadInputCSV(std::string InputName);
 

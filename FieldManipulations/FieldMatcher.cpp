@@ -105,9 +105,9 @@ std::vector<PFFSol> FieldMatcher::MatchAll_2(PFFSol FSol, const DataCacher::TCac
 	std::unordered_set<int> RemoveIndexes;
 	//std::vector<int> RemoveIndexes;
 	if (!EmptyField) {
-		for (size_t i = 0; i < FlippedRow.size(); i++) {
+		for (int i = 0; i < (int)FlippedRow.size(); i++) {
 			//if not filled, dont consider any possible field with that row filled
-			if (FlippedRow[i] == FlippedField.size()) { //cannot add to this row since it is already filled, remove the candidates
+			if (FlippedRow[i] == FlippedField.size()) { //cannot add to this row since it is already used, remove the candidates
 				for (auto const& index : Cache.InvolvedRow[i]) {
 					RemoveIndexes.insert(index);
 					//std::cout << index << " + ";
@@ -115,6 +115,7 @@ std::vector<PFFSol> FieldMatcher::MatchAll_2(PFFSol FSol, const DataCacher::TCac
 				//std::cout << "//";
 				continue;
 			}
+			if (FlippedRow[std::max(i - 1, 0)] + FlippedRow[i] + FlippedRow[std::min((int)FlippedRow.size() - 1, i + 1)] == 0) continue; //if there are no minos to the left, current and right columns, do not add
 			for (auto const& index : Cache.InvolvedRow[i]) { //possible, add the candidates
 				PFieldIndexes.insert(index);
 			}
