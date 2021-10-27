@@ -5,7 +5,9 @@
 struct SettingsData {
 	enum class SettingsEnum { //unused..?
 		FIELD_WIDTH=0, FIELD_HEIGHT, PIECE_DEPTH,
-		INPUT_FORMAT, OUTPUT_FORMAT, RESIDUE_LOG, SFINDER_FILTER, RAW_POSSIBLE_FILTER,
+		INPUT_FORMAT, OUTPUT_FORMAT, RESIDUE_LOG, 
+		EXPAND_INIT_FIELDS, SQUASH_FINAL_FIELDS, 
+		SFINDER_FILTER, RAW_POSSIBLE_FILTER, COUNT_MIN_FILTER,
 		INPUT_FILE_CSV, OUTPUT_FILE_CSV, RESIDUE_FILE_CSV, PATH_TO_SFINDER,
 		OPTIMIZE
 	};
@@ -22,8 +24,11 @@ struct SettingsData {
 		{"INPUT_FORMAT",		"0"					},
 		{"OUTPUT_FORMAT",		"0"					},
 		{"RESIDUE_LOG",			"0"					},
-		{"SFINDER_FILTER",		"0"					},
+		{"EXPAND_INIT_FIELDS",	"0"					},
+		{"SQUASH_FILTER",		"0"					},
+		{"SQUASH_FINAL_FIELDS",	"0"					},
 		{"RAW_POSSIBLE_FILTER",	"0"					},
+		{"COUNT_MIN_FILTER",	"1"					},
 		{"INPUT_FILE_CSV",		"input.csv"			},
 		{"OUTPUT_FILE_CSV",		"output.csv"		},
 		{"RESIDUE_FILE_CSV",	"residue.csv"		},
