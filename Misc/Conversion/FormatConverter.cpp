@@ -77,7 +77,7 @@ std::string TConverter::PFFToString(const PlayFieldFilled& PFFilled) {
 	return Output;
 }
 
-PlayFieldFilled TConverter::StringToPFF_Hack(const std::string& str, int height) {
+PlayFieldFilled TConverter::StringToPFF_Hack(const std::string& str) {
 	PlayFieldFilled Output;
 	std::vector<bool> tmpRow;
 	for (const auto letter : str) {
@@ -106,17 +106,17 @@ std::vector<StrSol> TConverter::PFFSolsToPFFSStrReps(const std::vector<PFFSol>& 
 	return Output;
 }
 
-PFFSol TConverter::PFFStrRepToPFFSol(const StrSol& SSol, int height) {
+PFFSol TConverter::PFFStrRepToPFFSol(const StrSol& SSol) {
 	PFFSol Output;
-	Output.PFFilled = StringToPFF_Hack(SSol.Str, height);
+	Output.PFFilled = StringToPFF_Hack(SSol.Str);
 	Output.Solves = SSol.Solves;
 	return Output;
 }
 
-std::vector<PFFSol> TConverter::PFFStrRepsToPFFSols(const std::vector<StrSol>& SSols, int height) {
+std::vector<PFFSol> TConverter::PFFStrRepsToPFFSols(const std::vector<StrSol>& SSols) {
 	std::vector<PFFSol> Output;
 	for (const auto& SSol : SSols) {
-		Output.push_back(PFFStrRepToPFFSol(SSol, height));
+		Output.push_back(PFFStrRepToPFFSol(SSol));
 	}
 	return Output;
 }
