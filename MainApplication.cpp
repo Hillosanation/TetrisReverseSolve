@@ -57,7 +57,7 @@ int main() {
 	//	std::cout << std::endl;
 	//}
 
-	FieldRemover remover;
+	FieldRemover remover(Settings);
 	PFFSols = remover.ReturnResults_2(PFFSols, std::stoi(Settings.GetValue(SettingsData::SettingsEnum::PIECE_DEPTH))); //does the field extension
 
 	PFFSols = resizer.ReducePFFs(PFFSols, Settings);
