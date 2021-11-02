@@ -1,10 +1,10 @@
 #include "FieldRemover.h"
 
-std::vector<PFFSol> FieldRemover::Iterate(const std::vector<PFFSol>& FSol) {
+std::vector<PFFSol> FieldRemover::Iterate(const std::vector<PFFSol>& PFFSols) {
 	auto StartTime = std::chrono::system_clock::now();
 	std::vector<PFFSol> Output;
 	std::vector<PFFSol> Result = {};
-	for (auto i : FSol) {
+	for (auto i : PFFSols) {
 		Result = Matcher.MatchAll_2(i, PossibleFields);
 		if (Result.size() == 0) {
 			//move this field into the residue
@@ -46,7 +46,7 @@ std::vector<PFFSol> FieldRemover::Iterate(const std::vector<PFFSol>& FSol) {
 	}
 }*/
 
-void FieldRemover::RecordToResidue(std::vector<PFFSol> FSol) {
+void FieldRemover::RecordToResidue(const std::vector<PFFSol>& PFFSols) {
 
 }
 
@@ -61,12 +61,12 @@ void FieldRemover::RecordToResidue(std::vector<PFFSol> FSol) {
 	return Output;
 }*/
 
-std::vector<PFFSol> FieldRemover::ReturnResults_2(std::vector<PFFSol> FSols, int depth) { //vector input may be unecessary
+std::vector<PFFSol> FieldRemover::ReturnResults_2(const std::vector<PFFSol>& PFFSols, int depth) { //vector input may be unecessary
 	DataCacher cache;
-	auto const& tmpField = FSols[0].PFFilled;
-	PossibleFields = cache.ReturnData_2((int)tmpField.size(), (int)tmpField[0].size()); //caches all possible ways to put tetromino in field
+	auto const& tmpField = PFFSols[0].PFFilled;
+	PossibleFields = cache.ReturnData_3((int)tmpField.size(), (int)tmpField[0].size()); //caches all possible ways to put tetromino in field
 
-	std::vector<PFFSol> Output = FSols;
+	std::vector<PFFSol> Output = PFFSols;
 	for (int i = 0; i < depth; i++) {
 		Output = Iterate(Output);
 	}
