@@ -8,17 +8,17 @@
 class FieldRemover {
 	FieldMatcher Matcher;
 	FieldMerger Merger;
-	DataCacher::TCache PossibleFields;
+	DataCacher::TPossibleFields PossibleFields;
 
 	std::vector<PFFSol> Iterate(const std::vector<PFFSol>& FSol);
 
 	/*void Test_ReturnResults();*/
 
-	void RecordToResidue(std::vector<PFFSol> FSol); //todo
+	void RecordToResidue(const std::vector<PFFSol>& PFFSols); //todo
 
 public:
 	/*std::vector<PFFSol> ReturnResults(std::vector<PFFSol> FSols, int depth);*/
 
-	std::vector<PFFSol> ReturnResults_2(std::vector<PFFSol> FSols, int depth);
+	std::vector<PFFSol> ReturnResults_2(const std::vector<PFFSol>& PFFSols, int depth);
 
 };
