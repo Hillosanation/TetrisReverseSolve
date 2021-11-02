@@ -5,7 +5,7 @@ std::vector<PFFSol> FieldRemover::Iterate(const std::vector<PFFSol>& PFFSols) {
 	std::vector<PFFSol> Output;
 	std::vector<PFFSol> Result = {};
 	for (auto i : PFFSols) {
-		Result = Matcher.MatchAll_2(i, PossibleFields);
+		Result = Matcher.MatchAll_3(i, PossibleFields);
 		if (Result.size() == 0) {
 			//move this field into the residue
 			continue;
@@ -72,3 +72,5 @@ std::vector<PFFSol> FieldRemover::ReturnResults_2(const std::vector<PFFSol>& PFF
 	}
 	return Output;
 }
+
+FieldRemover::FieldRemover(SettingsData& settings): Matcher(FieldMatcher( std::stoi(settings.GetValue(SettingsData::SettingsEnum::OPTIMIZE)) )){}
