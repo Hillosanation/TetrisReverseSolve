@@ -76,73 +76,132 @@ std::vector<PresentPieces> FieldMatcher::InsertSorted(std::vector<PresentPieces>
 //	return Output;
 //}
 
-std::vector<PFFSol> FieldMatcher::MatchAll_2(PFFSol FSol, const DataCacher::TCache& Cache) {
+//std::vector<PFFSol> FieldMatcher::MatchAll_2(PFFSol FSol, const DataCacher::TCache& Cache) {
+//	std::vector<PFFSol> Output;
+//	auto FlippedField = NegateField(FSol.PFFilled);
+//
+//	//accumulate all filled cells into the rows
+//	std::vector<int> FlippedRow;
+//	FlippedRow.resize(Cache.InvolvedRow.size());
+//	for (size_t col = 0; col < FSol.PFFilled.size(); col++) {
+//		for (size_t row = 0; row < FSol.PFFilled[col].size(); row++) {
+//			FlippedRow[row] += FlippedField[col][row];
+//		}
+//	}
+//	//special case: if there are no filled rows, all rows can be used
+//	bool EmptyField = IsFieldEmpty({ FlippedRow }, 0);
+//	////if (EmptyField) {
+//	////	for (auto& i : FilledRow) {
+//	////		i++;
+//	////	}
+//	////}
+//	//std::cout << "FilledRow: ";
+//	//for (auto i : FilledRow) {
+//	//	std::cout << i;
+//	//}
+//	//std::cout << "\n";
+//	//accumulate the possiblefields that are present in the relavent rows
+//	std::unordered_set<int> PFieldIndexes;
+//	std::unordered_set<int> RemoveIndexes;
+//	//std::vector<int> RemoveIndexes;
+//	if (!EmptyField) {
+//		for (int i = 0; i < (int)FlippedRow.size(); i++) {
+//			//if not filled, dont consider any possible field with that row filled
+//			if (FlippedRow[i] == FlippedField.size()) { //cannot add to this row since it is already used, remove the candidates
+//				for (auto const& index : Cache.InvolvedRow[i]) {
+//					RemoveIndexes.insert(index);
+//					//std::cout << index << " + ";
+//				}
+//				//std::cout << "//";
+//				continue;
+//			}
+//			if (FlippedRow[std::max(i - 1, 0)] + FlippedRow[i] + FlippedRow[std::min((int)FlippedRow.size() - 1, i + 1)] == 0) continue; //if there are no minos to the left, current and right columns, do not add
+//			for (auto const& index : Cache.InvolvedRow[i]) { //possible, add the candidates
+//				PFieldIndexes.insert(index);
+//			}
+//		}
+//		for (auto const& index : RemoveIndexes) {
+//			if (PFieldIndexes.find(index) == PFieldIndexes.end()) continue;
+//			PFieldIndexes.erase(index);
+//			//std::cout << "!";
+//		}
+//	}
+//	else {
+//		for (size_t i = 0; i < Cache.PossibleFields.size(); i++) {
+//			PFieldIndexes.insert((int)i); //all must be possible (1st stage)
+//		}
+//	}
+//	//std::cout << PFieldIndexes.size(); //check size
+//	//std::cout << ", ";
+//
+//	for (auto Index : PFieldIndexes) { //improve search by not considering fields that the separate to the original field
+//		DataCacher::TCacheItem CacheItem = Cache.PossibleFields[Index];
+//		if (!HaveCollision(FlippedField, CacheItem.Field)) { //possible to put field
+//			//remove that part from the field by XORing the original field and the current possiblefield
+//			//std::cout << i << "\n"; 
+//			auto NewField = XORFields(FSol.PFFilled, CacheItem.Field);
+//			auto NewSol = InsertSorted(FSol.Solves, CacheItem.piece);
+//			Output.push_back({ NewField, NewSol });
+//		}
+//	}
+//	return Output;
+//}
+
+void AddPiecesToSet(std::unordered_set<int>& Set, std::vector<int> PieceIndexes) {
+	for (const auto& index : PieceIndexes) {
+		Set.insert(index);
+	}
+}
+
+std::vector<PFFSol> FieldMatcher::MatchAll_3(PFFSol FSol, const DataCacher::TPossibleFields& Cache) {
 	std::vector<PFFSol> Output;
 	auto FlippedField = NegateField(FSol.PFFilled);
+	
+	std::vector<bool> TouchingFilledColumns;
+	TouchingFilledColumns.reserve(FlippedField[0].size());
+	{
+		std::vector<int> ColTotal;
+		for (size_t i = 0; i < FlippedField[0].size(); i++) {
+			ColTotal.push_back(0);
+		}
 
-	//accumulate all filled cells into the rows
-	std::vector<int> FlippedRow;
-	FlippedRow.resize(Cache.InvolvedRow.size());
-	for (size_t col = 0; col < FSol.PFFilled.size(); col++) {
-		for (size_t row = 0; row < FSol.PFFilled[col].size(); row++) {
-			FlippedRow[row] += FlippedField[col][row];
+		for (size_t col = 0; col < FlippedField.size(); col++) {
+			for (size_t row = 0; row < FlippedField[0].size(); row++) {
+				ColTotal[row]++;
+			}
+		}
+
+		for (int i = 0; i < (int)FlippedField[0].size(); i++) {
+			TouchingFilledColumns.push_back(ColTotal[std::max(i - 1, 0)] + ColTotal[i] + ColTotal[std::min((int)ColTotal.size() - 1, i + 1)] == 0); //false if total mino of all neibouring is zero
 		}
 	}
-	//special case: if there are no filled rows, all rows can be used
-	bool EmptyField = IsFieldEmpty({ FlippedRow }, 0);
-	////if (EmptyField) {
-	////	for (auto& i : FilledRow) {
-	////		i++;
-	////	}
-	////}
-	//std::cout << "FilledRow: ";
-	//for (auto i : FilledRow) {
-	//	std::cout << i;
-	//}
-	//std::cout << "\n";
-	//accumulate the possiblefields that are present in the relavent rows
+	//row skipping todo
+
 	std::unordered_set<int> PFieldIndexes;
 	std::unordered_set<int> RemoveIndexes;
-	//std::vector<int> RemoveIndexes;
-	if (!EmptyField) {
-		for (int i = 0; i < (int)FlippedRow.size(); i++) {
-			//if not filled, dont consider any possible field with that row filled
-			if (FlippedRow[i] == FlippedField.size()) { //cannot add to this row since it is already used, remove the candidates
-				for (auto const& index : Cache.InvolvedRow[i]) {
-					RemoveIndexes.insert(index);
-					//std::cout << index << " + ";
-				}
-				//std::cout << "//";
-				continue;
+	for (size_t col = 0; col < FlippedField.size(); col++ ){
+		//check if column should be searched
+		for (size_t row = 0; row < FlippedField[0].size(); row++) {
+			if (FlippedField[col][row] == false) { //not used yet, add the possible entries
+				AddPiecesToSet(PFieldIndexes, Cache.ContainedMino[col][row]);
 			}
-			if (FlippedRow[std::max(i - 1, 0)] + FlippedRow[i] + FlippedRow[std::min((int)FlippedRow.size() - 1, i + 1)] == 0) continue; //if there are no minos to the left, current and right columns, do not add
-			for (auto const& index : Cache.InvolvedRow[i]) { //possible, add the candidates
-				PFieldIndexes.insert(index);
+			else {
+				AddPiecesToSet(RemoveIndexes, Cache.ContainedMino[col][row]);
 			}
-		}
-		for (auto const& index : RemoveIndexes) {
-			if (PFieldIndexes.find(index) == PFieldIndexes.end()) continue;
-			PFieldIndexes.erase(index);
-			//std::cout << "!";
-		}
-	}
-	else {
-		for (size_t i = 0; i < Cache.PossibleFields.size(); i++) {
-			PFieldIndexes.insert((int)i); //all must be possible (1st stage)
-		}
-	}
-	//std::cout << PFieldIndexes.size(); //check size
-	//std::cout << ", ";
 
-	for (auto Index : PFieldIndexes) { //improve search by not considering fields that the separate to the original field
-		DataCacher::TCacheItem CacheItem = Cache.PossibleFields[Index];
-		if (!HaveCollision(FlippedField, CacheItem.Field)) { //possible to put field
-			//remove that part from the field by XORing the original field and the current possiblefield
-			//std::cout << i << "\n"; 
-			auto NewField = XORFields(FSol.PFFilled, CacheItem.Field);
-			auto NewSol = InsertSorted(FSol.Solves, CacheItem.piece);
-			Output.push_back({ NewField, NewSol });
 		}
 	}
+	for (auto const& index : RemoveIndexes) {
+		if (PFieldIndexes.find(index) == PFieldIndexes.end()) continue;
+		PFieldIndexes.erase(index);
+	}
+	
+	for (auto Index : PFieldIndexes) { //improve search by not considering fields that the separate to the original field
+		//remove that part from the field by XORing the original field and the current possiblefield
+		auto NewField = XORFields(FSol.PFFilled, Cache.PFields[Index].Field);
+		auto NewSol = InsertSorted(FSol.Solves, Cache.PFields[Index].piece);
+		Output.push_back({ NewField, NewSol });
+	}
+
 	return Output;
 }
