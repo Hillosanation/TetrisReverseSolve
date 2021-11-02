@@ -15,6 +15,14 @@ class SolutionFilter {
 		}
 		return Output;
 	}
+
+	std::vector<PFFSol> Filter_PurePossible(const std::vector<PFFSol>& PFFSols) { //there are some field that cannot be created with only normal pieces
+		
+	}
+
+
+
+
 public:
 	std::vector<PFFSol> Filter(const std::vector<PFFSol>& PFFSols, SettingsData& Settings) {
 		auto StartTime = std::chrono::system_clock::now();
