@@ -4,9 +4,7 @@
 
 PlayFieldFilled FieldMatcher::NegateField(PlayFieldFilled Field) {
 	for (auto& col : Field) {
-		for (auto mino : col) {
-			mino = !mino;
-		}
+		col.flip();
 	}
 	return Field;
 }
@@ -175,13 +173,19 @@ std::vector<PFFSol> FieldMatcher::MatchAll_3(PFFSol FSol, const DataCacher::TPos
 			TouchingFilledColumns.push_back(ColTotal[std::max(i - 1, 0)] + ColTotal[i] + ColTotal[std::min((int)ColTotal.size() - 1, i + 1)] == 0); //false if total mino of all neibouring is zero
 		}
 	}
-	//row skipping todo
+	//if completely empty, that means all cominations are possible, reverse the whole thing
+	if (std::find(TouchingFilledColumns.begin(), TouchingFilledColumns.end(), true) == TouchingFilledColumns.end()) {
+		TouchingFilledColumns.flip();
+	}
+	//next optimization level: only include leftmost sides?
 
 	std::unordered_set<int> PFieldIndexes;
 	std::unordered_set<int> RemoveIndexes;
-	for (size_t col = 0; col < FlippedField.size(); col++ ){
+	for (size_t row = 0; row < FlippedField[0].size(); row++) {
 		//check if column should be searched
-		for (size_t row = 0; row < FlippedField[0].size(); row++) {
+		if (!TouchingFilledColumns[row] and OptimizeLevel == 1) continue;
+
+		for (size_t col = 0; col < FlippedField.size(); col++ ){
 			if (FlippedField[col][row] == false) { //not used yet, add the possible entries
 				AddPiecesToSet(PFieldIndexes, Cache.ContainedMino[col][row]);
 			}
@@ -204,4 +208,8 @@ std::vector<PFFSol> FieldMatcher::MatchAll_3(PFFSol FSol, const DataCacher::TPos
 	}
 
 	return Output;
+}
+
+FieldMatcher::FieldMatcher(const int& OptimizeLvl) {
+	OptimizeLevel = OptimizeLvl;
 }
