@@ -28,7 +28,7 @@ public:
 		int MinimumNum = std::stoi(Settings.GetValue(SettingsData::SettingsEnum::COUNT_MIN_FILTER));
 		auto StartTime = std::chrono::system_clock::now();
 		std::vector<PFFSol> Output;
-		if (MinimumNum != 1) Output = Filter_MinimumSolutions(PFFSols, MinimumNum);
+		if (MinimumNum != 1) return Filter_MinimumSolutions(PFFSols, MinimumNum);
 		
 		auto EndTime = std::chrono::system_clock::now();
 		std::cout << "Time taken for filter: " << std::chrono::duration_cast<std::chrono::microseconds>(EndTime - StartTime).count() / 1000.0 << "ms\n";
